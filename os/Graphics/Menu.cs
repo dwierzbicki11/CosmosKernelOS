@@ -31,13 +31,16 @@ namespace os.Graphics
         public override void Run()
         {
             // Optymalizacja zbierania śmieci – nie wywołuj za często
-            if (lastHeapCollect >= 30) // Zwiększ limit przed Garbage Collection
+            if (lastHeapCollect >= 300) // Zwiększ limit przed Garbage Collection
             {
                 lastHeapCollect = 0;
                 Heap.Collect();
             }
-            else lastHeapCollect++;
-
+            else { 
+                lastHeapCollect++;
+                
+            }
+            Kernel.PrintDebug($"Ilość śmieci w Menu.cs: {lastHeapCollect}");
             if (IsVisible)
             {
                 Draw();
@@ -47,6 +50,7 @@ namespace os.Graphics
         public void Show()
         {
             IsVisible = true;
+            ProcessManager.Start(this);
         }
 
         public void Hide()

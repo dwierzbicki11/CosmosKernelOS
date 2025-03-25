@@ -17,9 +17,11 @@ namespace CosmosKernel1
 
         protected override void BeforeRun()
         {
+            Console.Clear();
+            Command.Run("space");
+            Console.WriteLine();
+            Command.Run("info");
 
-            Console.WriteLine("Cosmos booted successfully. Running GUI...");
-            //LogError("Test");
         }
         public static void LogError(string errorMessage)
         {

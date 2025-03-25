@@ -13,6 +13,16 @@ namespace CosmosKernel1.Apps
         private Button start;
         private Menu menu;
 
+        public TaskBar()
+        {
+            // Inicjalizacja przycisku Start
+            start = new Button("Start", 100, 50, 0, 0, Color.Black, Color.White, GUI.MainCanvas);
+            start.OnClick = OnStartClick;
+
+            // Inicjalizacja menu
+            menu = new Menu();
+        }
+
         public override void Run()
         {
             try
@@ -22,14 +32,10 @@ namespace CosmosKernel1.Apps
                 int sizeX = windowData.WinPos.Width, sizeY = windowData.WinPos.Height;
                 GUI.MainCanvas.DrawFilledRectangle(new Cosmos.System.Graphics.Pen(GUI.colors.mainColor), x, y, sizeX, sizeY);
 
-                // Inicjalizacja przycisku Start
-                start = new Button("Start", 100, 50, 0, 0, Color.Black, Color.White, GUI.MainCanvas);
-                start.OnClick = OnStartClick;
+                // Rysowanie przycisku Start
                 start.Draw();
 
-                // Menu nie jest tworzone od razu – inicjalizujemy je dopiero po kliknięciu "Start"
-                menu = new Menu();
-
+                // Obsługa myszy
                 HandleMouse();
             }
             catch (Exception ex)
@@ -42,10 +48,8 @@ namespace CosmosKernel1.Apps
 
         private void OnStartClick()
         {
-            ProcessManager.Start(menu);
             menu.Show();
         }
-
 
         private void HandleMouse()
         {

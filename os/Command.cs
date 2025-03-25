@@ -141,6 +141,8 @@ namespace os
             WriteMessage.writeInfo("OS Name: MyOS");
             WriteMessage.writeInfo("Version: 1.0");
             WriteMessage.writeInfo("Available RAM: " + Cosmos.Core.CPU.GetAmountOfRAM() + " MB");
+            WriteMessage.writeInfo($"Processor: \n---Name-{Cosmos.Core.CPU.GetCPUBrandString()} ");
+            
         }
 
         private static void ShowDiskSpace()

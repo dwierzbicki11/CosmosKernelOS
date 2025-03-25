@@ -5,6 +5,7 @@ using CosmosKernel1.Apps;
 using System.Drawing;
 using Console = System.Console;
 using os;
+using os.Apps;
 
 namespace CosmosKernel1.Graphics
 {
@@ -55,6 +56,7 @@ namespace CosmosKernel1.Graphics
 
                 ProcessManager.Start(new MessageBox { windowData = new WindowData { WinPos = new Rectangle(100, 100, 350, 200) } });
                 ProcessManager.Start(new TaskBar { windowData = new WindowData { WinPos = new Rectangle(0, 0, ScreenSizeX, 50) } });
+                ProcessManager.Start(new Terminal());
             }
             catch (Exception ex)
             {
