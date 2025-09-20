@@ -1,13 +1,10 @@
-﻿using CosmosKernel1;
+﻿using Cosmos.System.Graphics;
+using Cosmos.System.Graphics.Fonts;
+using CosmosKernel1;
+using CosmosKernel1.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cosmos.System.Graphics;
 using System.Drawing;
-using CosmosKernel1.Graphics;
-using Cosmos.System.Graphics.Fonts;
 
 namespace os.Apps
 {
@@ -22,7 +19,7 @@ namespace os.Apps
         public Terminal()
         {
             name = "Terminal";
-            windowData = new WindowData { WinPos = new Rectangle(0, 50, 800, 600) };
+            windowData = new WindowData { WinPos = new Rectangle(500, 90, 800, 600) };
         }
 
         public override void Run()
@@ -45,7 +42,7 @@ namespace os.Apps
             }
 
             // Rysowanie bufora wejścia
-            GUI.MainCanvas.DrawString(inputBuffer,PCScreenFont.Default, new Pen(Color.White), windowData.WinPos.X + 10, lineY);
+            GUI.MainCanvas.DrawString(inputBuffer, PCScreenFont.Default, new Pen(Color.White), windowData.WinPos.X + 10, lineY);
 
             // Wyświetlanie wszystkiego na ekranie
             GUI.MainCanvas.Display();

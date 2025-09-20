@@ -25,33 +25,22 @@ namespace CosmosKernel1
         }
         public static void LogError(string errorMessage)
         {
-            //var disk = new Disk();
-            
             try
             {
-                // Ścieżka do pliku logu
                 string logFilePath = @"0:\error_log.txt";
-
-                // Dodaj datę i godzinę do komunikatu
                 string logEntry = $"[{DateTime.Now}] {errorMessage}\n";
-
-                // Sprawdź, czy plik istnieje
                 if (!File.Exists(logFilePath))
                 {
-                    //File.Create(path);
                     File.WriteAllText(logFilePath, logEntry);
                 }
                 else
                 {
                     File.AppendAllText(logFilePath, logEntry);
                 }
-
-                // Wyświetl komunikat w konsoli
                 Console.WriteLine($"Zapisano błąd do pliku: {logFilePath}");
             }
             catch (Exception ex)
             {
-                // Jeśli wystąpi błąd podczas zapisywania do pliku, wyświetl go w konsoli
                 Console.WriteLine($"Błąd podczas zapisywania do pliku logu: {ex.Message}");
             }
         }
@@ -59,7 +48,8 @@ namespace CosmosKernel1
         {
             try
             {
-                if (lastHeapCollect >= 20) { 
+                if (lastHeapCollect >= 20)
+                {
                     Heap.Collect();
                     lastHeapCollect = 0;
                 }
@@ -73,6 +63,14 @@ namespace CosmosKernel1
                 }
                 else
                 {
+                    if (KeyboardManager.TryReadKey(out var key))
+                    {
+                        WriteMessage.writeOK($"[KEY EVENT] Key: {key.Key}, char: '{key.KeyChar}'");
+                    }
+                    else
+                    {
+                        WriteMessage.writeError("[KEY EVENT] keyboard not found");
+                    }
                     Console.Write($"{path}>");
                     var command = Console.ReadLine();
                     Command.Run(command);
@@ -80,10 +78,9 @@ namespace CosmosKernel1
             }
             catch (Exception ex)
             {
-                // Wyłącz GUI i wyświetl błąd w konsoli
                 runGui = false;
                 WriteMessage.writeError("GUI crashed! Error details:");
-                WriteMessage.writeError(ex.ToString()); // Wyświetl szczegóły wyjątku
+                WriteMessage.writeError(ex.ToString());
             }
         }
     }

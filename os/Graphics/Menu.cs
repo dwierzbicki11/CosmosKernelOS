@@ -13,14 +13,13 @@ namespace os.Graphics
         private Rectangle windowData;
         private Button shutdownButton;
         private Button restartButton;
-        private int lastHeapCollect;
+        private bool isDrawn = false;
 
         public Menu()
         {
             IsVisible = false;
-            windowData = new Rectangle(0, 50, 100, 100); // Przykładowe wymiary i pozycja menu
+            windowData = new Rectangle(0, 50, 100, 100);
 
-            // Inicjalizacja przycisków
             shutdownButton = new Button("Shutdown", 100, 50, 0, 50, Color.Black, Color.White, GUI.MainCanvas);
             shutdownButton.OnClick = Shutdown;
 
@@ -30,17 +29,6 @@ namespace os.Graphics
 
         public override void Run()
         {
-            // Optymalizacja zbierania śmieci – nie wywołuj za często
-            if (lastHeapCollect >= 300) // Zwiększ limit przed Garbage Collection
-            {
-                lastHeapCollect = 0;
-                Heap.Collect();
-            }
-            else { 
-                lastHeapCollect++;
-                
-            }
-            Kernel.PrintDebug($"Ilość śmieci w Menu.cs: {lastHeapCollect}");
             if (IsVisible)
             {
                 Draw();
@@ -50,28 +38,29 @@ namespace os.Graphics
         public void Show()
         {
             IsVisible = true;
-            ProcessManager.Start(this);
+            isDrawn = false;
         }
 
         public void Hide()
         {
             IsVisible = false;
         }
-           
 
         private void Draw()
         {
-            // Rysowanie menu
-            GUI.MainCanvas.DrawFilledRectangle(new Pen(Color.Gray), windowData.X, windowData.Y, windowData.Width, windowData.Height);
-            shutdownButton.Draw();
-            restartButton.Draw();
+            if (!isDrawn)
+            {
+                GUI.MainCanvas.DrawFilledRectangle(new Pen(Color.Gray), windowData.X, windowData.Y, windowData.Width, windowData.Height);
+                shutdownButton.Draw();
+                restartButton.Draw();
+                isDrawn = true;
+            }
         }
 
         public void HandleMouse()
         {
             if (IsVisible)
             {
-                // Obsługuje kliknięcia w przyciski
                 shutdownButton.HandleMouse();
                 restartButton.HandleMouse();
             }
@@ -81,14 +70,12 @@ namespace os.Graphics
         {
             Kernel.runGui = false;
             Console.WriteLine("System is shutting down...");
-            // Dodaj kod do zamykania systemu
         }
 
         private void Restart()
         {
             Kernel.runGui = false;
             Console.WriteLine("System is restarting...");
-            // Dodaj kod do ponownego uruchamiania systemu
         }
     }
 }

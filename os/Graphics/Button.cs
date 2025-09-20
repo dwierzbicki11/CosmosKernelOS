@@ -17,11 +17,9 @@ namespace os.Graphics
         public Color Background { get; set; }
         public Color Foreground { get; set; }
         public Canvas Canvas { get; set; }
-
-        // Delegat do przechowywania akcji, które są wywoływane po kliknięciu
         public Action OnClick { get; set; }
 
-        private const int CharWidth = 8;  // Szerokość pojedynczego znaku w pikselach (monospaced)
+        private const int CharWidth = 8; 
 
         // Konstruktor
         public Button(string text, int width, int height, int x, int y, Color background, Color foreground, Canvas canvas)
@@ -69,8 +67,6 @@ namespace os.Graphics
             {
                 int mouseX = (int)Math.Clamp(MouseManager.X, 0, MouseManager.ScreenWidth - 1);
                 int mouseY = (int)Math.Clamp(MouseManager.Y, 0, MouseManager.ScreenHeight - 1);
-
-                // Sprawdzenie, czy mysz znajduje się na przycisku i czy zostało kliknięte
                 if (IsMouseOverButton(mouseX, mouseY) && MouseManager.MouseState == MouseState.Left)
                 {
                     // Jeśli kliknięto przycisk, wywołaj metodę OnClick (delegat)

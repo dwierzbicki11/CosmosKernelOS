@@ -7,7 +7,7 @@ namespace os
 {
     class Disk
     {
-        private CosmosVFS disk;
+        public CosmosVFS disk;
 
         public Disk()
         {
@@ -43,7 +43,7 @@ namespace os
         {
             try
             {
-                ListDirectory(path, 0); // Start with indentation level 0
+                ListDirectory(path);
             }
             catch (Exception ex)
             {
@@ -51,25 +51,32 @@ namespace os
             }
         }
 
-        private void ListDirectory(string path, int indentLevel)
+        private void ListDirectory(string path)
         {
-            var files = Directory.GetFiles(path);
-            var directories = Directory.GetDirectories(path);
-
-            // Display current directory name
-            Console.WriteLine(new string(' ', indentLevel * 4) + Path.GetFileName(path));
-
-            // Display files in the current directory
-            foreach (var file in files)
+            try
             {
-                Console.WriteLine(new string(' ', (indentLevel + 1) * 4) + Path.GetFileName(file));
+                var files = Directory.GetFiles(path);
+                var directories = Directory.GetDirectories(path);
+                foreach (var dir in directories)
+                {
+                    if (Directory.GetFiles(dir).Length > 0)
+                    {
+                        foreach (var file in Directory.GetFiles(dir))
+                        {
+                            WriteMessage.writeInfo($"\tFile: {file}");
+                        }
+                    }
+                    else
+                    {
+                        WriteMessage.writeInfo($"\tDirectory: {dir}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteMessage.writeError($"Error listing directory: {ex.Message}");
             }
 
-            // Recursively display subdirectories
-            foreach (var dir in directories)
-            {
-                ListDirectory(dir, indentLevel + 1);
-            }
         }
 
         public void CreateFile(string path)

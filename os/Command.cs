@@ -13,6 +13,7 @@ namespace os
 {
     public static class Command
     {
+        static Disk disk = new Disk();
         public static void Run(string command)
         {
             string[] words = command.Split(' ');
@@ -40,6 +41,10 @@ namespace os
                         else
                         {
                             WriteMessage.writeError("Usage: format <drive>");
+                            for (int i = 0; i < disk.disk.Disks.Count; i++)
+                            {
+                                WriteMessage.writeInfo($"Drive {i}: {disk.disk.Disks[i].Size}");
+                            }
                         }
                         break;
                     case "ping":
@@ -82,7 +87,7 @@ namespace os
                         }
                         else
                         {
-                            ListFiles("/"); // Default to root directory
+                            ListFiles(@"0:\");
                         }
                         break;
                     case "mkdir":
@@ -137,23 +142,29 @@ namespace os
         }
         private static void ShowSystemInfo()
         {
+            ulong speed = Cosmos.Core.CPU.GetCPUUptime();
+            string speedmsg="";
+            if (speed < 1000) speedmsg = speed.ToString() + "Hz";
+            if (speed > 1000 && speed < 1000000) speedmsg = (speed/1000) + "KHz";
+            if (speed > 1000000 && speed < 1000000000) speedmsg = (speed/1000000) + "MHz";
+            if (speed > 1000000000 && speed < 1000000000000) speedmsg = (speed/ 1000000000) + "GHz";
+            if (speed > 1000000000000 && speed < 1000000000000000) speedmsg = (speed/ 1000000000000) + "THz";
+
             WriteMessage.writeInfo("System Information:");
             WriteMessage.writeInfo("OS Name: MyOS");
             WriteMessage.writeInfo("Version: 1.0");
             WriteMessage.writeInfo("Available RAM: " + Cosmos.Core.CPU.GetAmountOfRAM() + " MB");
-            WriteMessage.writeInfo($"Processor: \n---Name-{Cosmos.Core.CPU.GetCPUBrandString()} ");
+            WriteMessage.writeInfo($"Processor: \n\t---Name-{Cosmos.Core.CPU.GetCPUBrandString()} \n\t---Speed-{speedmsg}");
             
         }
 
         private static void ShowDiskSpace()
         {
-            var disk = new Disk();
             disk.ShowDiskSpace();
         }
 
         private static void FormatDisk(int drive)
         {
-            var disk = new Disk();
             disk.Format(drive);
         }
 
@@ -161,13 +172,11 @@ namespace os
         {
             try
             {
-                // Resolve host to IP address using DnsClient
                 var dnsClient = new DnsClient();
-                dnsClient.Connect(new Address(8, 8, 8, 8)); // Google DNS
+                dnsClient.Connect(new Address(8, 8, 8, 8)); 
                 dnsClient.SendAsk(host);
                 var address = dnsClient.Receive();
 
-                // Ping the resolved address
                 var ping = new ICMPClient();
                 ping.Connect(address);
                 WriteMessage.writeOK($"Ping reply from {address}");
@@ -182,7 +191,6 @@ namespace os
         {
             try
             {
-                // Get the first available network device
                 var networkDevice = NetworkDevice.Devices[0].Name;
                 var network = NetworkDevice.GetDeviceByName(networkDevice);
                 if (networkDevice != null)
@@ -207,7 +215,7 @@ namespace os
             try
             {
                 var dnsClient = new DnsClient();
-                dnsClient.Connect(new Address(8, 8, 8, 8)); // Google DNS
+                dnsClient.Connect(new Address(8, 8, 8, 8)); 
                 dnsClient.SendAsk(hostname);
                 var address = dnsClient.Receive();
                 WriteMessage.writeOK($"Resolved {hostname} to {address}");
@@ -218,7 +226,7 @@ namespace os
             }
         }
 
-        /*private static void DownloadFile(string url, string savePath)
+        private static void DownloadFile(string url, string savePath)
         {
             try
             {
@@ -241,7 +249,8 @@ namespace os
                 client.Send(Encoding.ASCII.GetBytes(request));
 
                 // Receive response
-                var response = client.Receive();
+                EndPoint source = new EndPoint(address, 80);
+                var response = client.Receive(ref source);
                 var responseText = Encoding.ASCII.GetString(response);
 
                 // Extract body (skip headers)
@@ -259,23 +268,22 @@ namespace os
             {
                 WriteMessage.writeError($"Error downloading file: {ex.Message}");
             }
-        }*/
+        }
 
         private static void ListFiles(string path)
         {
-            var disk = new Disk();
             disk.ListFiles(path);
         }
 
         private static void CreateDirectory(string path)
         {
-            var disk = new Disk();
+            
             disk.CreateDirectory(path);
         }
 
         private static void DeleteDirectory(string path)
         {
-            var disk = new Disk();
+            
             disk.DeleteDirectory(path);
         }
 

@@ -1,11 +1,11 @@
-﻿using Cosmos.System.Graphics;
-using Cosmos.System;
-using System;
+﻿using Cosmos.System;
+using Cosmos.System.Graphics;
 using CosmosKernel1.Apps;
-using System.Drawing;
-using Console = System.Console;
 using os;
 using os.Apps;
+using os.Graphics;
+using System;
+using System.Drawing;
 
 namespace CosmosKernel1.Graphics
 {
@@ -16,6 +16,7 @@ namespace CosmosKernel1.Graphics
         public static Bitmap wall, cur;
         private static bool cursorVisible = true; // Flaga do kontrolowania widoczności kursora
         public static Colors colors = new Colors();
+        static Button terminal;
 
         public static void Update()
         {
@@ -30,14 +31,12 @@ namespace CosmosKernel1.Graphics
                 {
                     MainCanvas.DrawImageAlpha(cur, (int)MouseManager.X, (int)MouseManager.Y);
                 }
-
-                // Wyświetlanie wszystkiego na ekranie
                 MainCanvas.Display();
             }
             catch (Exception ex)
             {
                 Kernel.LogError($"Błąd w GUI.Update: {ex.Message}");
-                Kernel.runGui = false; // Wyłącz GUI i przejdź do trybu konsolowego
+                Kernel.runGui = false;
             }
         }
 
@@ -45,27 +44,26 @@ namespace CosmosKernel1.Graphics
         {
             try
             {
-                // Inicjalizacja głównego ekranu
-                MainCanvas = new SVGAIICanvas(new Mode(ScreenSizeX, ScreenSizeY, ColorDepth.ColorDepth32));
 
-                // Ustawienie rozmiarów ekranu i pozycji kursora na środku
+                MainCanvas = new SVGAIICanvas(new Mode(ScreenSizeX, ScreenSizeY, ColorDepth.ColorDepth32));
+                terminal = new Button("Terminal", 100, 50, 100, 100, Color.Black, Color.White, MainCanvas);
+                terminal.Draw();
+
                 MouseManager.ScreenWidth = (uint)ScreenSizeX;
                 MouseManager.ScreenHeight = (uint)ScreenSizeY;
                 MouseManager.X = (uint)ScreenSizeX / 2;
                 MouseManager.Y = (uint)ScreenSizeY / 2;
-
-                ProcessManager.Start(new MessageBox { windowData = new WindowData { WinPos = new Rectangle(100, 100, 350, 200) } });
+                terminal.OnClick = () => ProcessManager.Start(new Terminal { windowData = new WindowData { WinPos = new Rectangle(100, 100, 800, 600) } });
                 ProcessManager.Start(new TaskBar { windowData = new WindowData { WinPos = new Rectangle(0, 0, ScreenSizeX, 50) } });
-                ProcessManager.Start(new Terminal());
+
             }
             catch (Exception ex)
             {
                 WriteMessage.writeError($"Błąd w GUI.StartGui: {ex.Message}");
-                Kernel.runGui = false; // Wyłącz GUI i przejdź do trybu konsolowego
+                Kernel.runGui = false;
             }
         }
 
-        // Możesz dodać metody do kontrolowania widoczności kursora
         public static void ShowCursor()
         {
             cursorVisible = true;
