@@ -63,14 +63,6 @@ namespace CosmosKernel1
                 }
                 else
                 {
-                    if (KeyboardManager.TryReadKey(out var key))
-                    {
-                        WriteMessage.writeOK($"[KEY EVENT] Key: {key.Key}, char: '{key.KeyChar}'");
-                    }
-                    else
-                    {
-                        WriteMessage.writeError("[KEY EVENT] keyboard not found");
-                    }
                     Console.Write($"{path}>");
                     var command = Console.ReadLine();
                     Command.Run(command);
